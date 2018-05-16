@@ -29,10 +29,7 @@ namespace MonikaBot
         {
             if (orderEntries.Any(entry => entry.item.Id == i.Id))
             {
-                orderEntries.Where(entry => entry.item.id == i.Id)
-                {
-                    entry.quantity++;
-                }
+                orderEntries.Where(entry => entry.item.id == i.Id).quantity++;
             }
             else
             {
