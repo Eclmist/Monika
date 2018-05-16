@@ -1,18 +1,15 @@
 using System;
 using System.Threading.Tasks;
-
 using Microsoft.Bot.Connector;
 using Microsoft.Bot.Builder.Dialogs;
 using System.Net.Http;
 
 
-namespace Microsoft.Bot.Sample.SimpleEchoBot
+namespace MonikaBot
 {
     [Serializable]
-    public class EchoDialog : IDialog<object>
+    public class RootDialog : IDialog<object>
     {
-        protected int count = 1;
-
         public async Task StartAsync(IDialogContext context)
         {
             context.Wait(MessageReceivedAsync);
