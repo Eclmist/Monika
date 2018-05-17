@@ -1,10 +1,10 @@
 using System;
-using System.List;
-using System.LINQ;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace MonikaBot
 {
-    struct OrderEntry
+    class OrderEntry
     {
         public Item item;
         public ushort quantity;   
@@ -12,7 +12,7 @@ namespace MonikaBot
         public OrderEntry(Item i)
         {
             item = i;
-            quantity = 0;
+            quantity = 1;
         }
     }
 
@@ -27,9 +27,11 @@ namespace MonikaBot
 
         public void AddItem(Item i)
         {
-            if (orderEntries.Any(entry => entry.item.Id == i.Id))
+            var e = orderEntries.FirstOrDefault(entry => entry.item.Id == i.Id);
+
+            if (e != null)
             {
-                orderEntries.Where(entry => entry.item.id == i.Id).quantity++;
+                e.quantity++; 
             }
             else
             {
