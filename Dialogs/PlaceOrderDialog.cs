@@ -8,7 +8,7 @@ using Microsoft.Bot.Builder.FormFlow;
 namespace MonikaBot
 {
     [Serializable]
-    public class PlaceOrderDialog : RootDialog // i mean.. since there are virtual functions in rootdialog.... no reason not to.. right?
+    public class PlaceOrderDialog : IDialog<object>
     {
         public async Task StartAsync(IDialogContext context)
         {
@@ -29,8 +29,11 @@ namespace MonikaBot
                     {
                         var completed = await order;
 
-                        // Actually process the sandwich order...
-                        await context.PostAsync("Processed your order!");
+                        // cart keeps calling constructor wtf
+                        Cart cart = context.UserData.GetValueOrDefault<Cart>("Cart");
+                        cart.AddItem(ItemCatalogue.FindItemByName(completed.ItemName), completed.Quantity, completed.Shop);
+
+                  
                     }
                     catch (FormCanceledException<OrderForm> e)
                     {
@@ -63,6 +66,42 @@ namespace MonikaBot
             {
             }
         }
+        public virtual async Task ChildDialogComplete(IDialogContext context, IAwaitable<object> response)
+        {
 
+            Cart cart = context.UserData.GetValueOrDefault<Cart>("Cart");
+            
+            // Actually process the sandwich order...
+            await context.PostAsync(cart.PrintCart());
+            PromptDialog.Choice(
+                context: context,
+                resume: ChoiceReceivedAsync,
+                options: new[] { "Yes", "No" },
+                prompt: "Are the order details so far correct?",
+                promptStyle: PromptStyle.Auto
+                );  
+
+            context.Done(this);
+        }
+
+        public async Task ChoiceReceivedAsync(IDialogContext context, IAwaitable<string> argument)
+        {
+            string reponse = await argument;
+
+            switch(reponse)
+            {
+                case "No":
+                    {
+                        // make some stuff happen here to edit order
+
+                            break;
+                    }
+                default:
+                    {
+                        context.Done(this);
+                        break;
+                    }
+            }
+        }
     }
 }

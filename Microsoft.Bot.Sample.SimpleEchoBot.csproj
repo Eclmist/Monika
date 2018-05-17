@@ -183,7 +183,8 @@
     <Compile Include="Dialogs\RootDialog.cs" />
     <Compile Include="FormFlows\OrderForm.cs" />
     <Compile Include="Orders\Item.cs" />
-    <Compile Include="Orders\Order.cs" />
+    <Compile Include="Orders\ItemCatalogue.cs" />
+    <Compile Include="Orders\Cart.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>

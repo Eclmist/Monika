@@ -12,18 +12,20 @@ namespace MonikaBot
     {
         public async Task StartAsync(IDialogContext context)
         {
-            await context.PostAsync("Hi! Monika here! What kind of poem shall we write today?");
+            context.Wait(ShowOptions);
+            //context.Wait(MessageReceivedAsync); apparently this cant exist
+        }
+
+        public async virtual Task ShowOptions(IDialogContext context, IAwaitable<IMessageActivity> result)
+        {
 
             PromptDialog.Choice(
                 context: context,
                 resume: ChoiceReceivedAsync,
                 options: new[] { "Place New Order", "Fulfil an Order" },
-                prompt: "Menu",
-                retry: "What do you mean? :c",
+                prompt: "Hi! Monika here! What kind of poem shall we write today?",
                 promptStyle: PromptStyle.Auto
             );
-
-            context.Wait(MessageReceivedAsync);
         }
 
         public async Task MessageReceivedAsync(IDialogContext context, IAwaitable<IMessageActivity> argument)
@@ -55,6 +57,7 @@ namespace MonikaBot
             {
                 case "Place New Order":
                     {
+                        context.UserData.SetValue<Cart>("Cart", new Cart());
                         context.Call<object>(new PlaceOrderDialog(), ChildDialogComplete);
                             break;
                     }
@@ -70,6 +73,30 @@ namespace MonikaBot
                     }
             }
         }
+        public async Task AddMoreOptionReceivedAsync(IDialogContext context, IAwaitable<string> argument)
+        {
+            string reponse = await argument;
+
+            switch (reponse)
+            {
+                case "Yes":
+                    {
+                        context.Call<object>(new PlaceOrderDialog(), ChildDialogComplete);
+                        break;
+                    }
+                case "No":
+                    {
+                        //context.Call<object>(new FulfilOrderDialog(), () => { context.Done(this); });
+                        break;
+                    }
+                default:
+                    {
+                        context.Done(this);
+                        break;
+                    }
+            }
+        }
+
         public virtual async Task ChildDialogComplete(IDialogContext context, IAwaitable<object> response)
         {
             //await context.PostAsync("We hope this has been useful :)");
@@ -82,8 +109,23 @@ namespace MonikaBot
             //                promptStyle: PromptStyle.Auto
             //                );
 
-            await context.PostAsync("Okay, let me know if you need anything else!");
-            context.Done(this);
+            Cart currentOrder = context.UserData.GetValueOrDefault<Cart>("Cart");
+
+            if (currentOrder.Any())
+            {
+                PromptDialog.Choice(
+                    context: context,
+                    resume: AddMoreOptionReceivedAsync,
+                    options: new[] { "Yes", "No" },
+                    prompt: "Would you like to add another item to your order?",
+                    promptStyle: PromptStyle.Auto
+                );
+            }
+            else
+            {
+                await context.PostAsync("Okay, let me know if you need anything else!");
+                context.Done(this);
+            }
         }
     }
 }
