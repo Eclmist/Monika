@@ -4,6 +4,7 @@ using System.Linq;
 
 namespace MonikaBot
 {
+    [Serializable]
     class OrderEntry
     {
         public Item item;
@@ -18,6 +19,7 @@ namespace MonikaBot
         }
     }
 
+    [Serializable]
     class Cart
     {
         List<OrderEntry> orderEntries;
