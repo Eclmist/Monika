@@ -18,7 +18,6 @@ namespace MonikaBot
 
         public async virtual Task ShowOptions(IDialogContext context, IAwaitable<IMessageActivity> result)
         {
-            context.
             PromptDialog.Choice(
                 context: context,
                 resume: ChoiceReceivedAsync,

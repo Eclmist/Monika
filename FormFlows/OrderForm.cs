@@ -17,7 +17,11 @@ namespace MonikaBot
 
         public static IForm<OrderForm> BuildOrderForm()
         {
-            return new FormBuilder<OrderForm>().AddRemainingFields().Build();
+            return new FormBuilder<OrderForm>()
+                .Message("hi your order whatever")
+                //.AddRemainingFields()
+                //.Confirm()
+                .Build();
         }
     }
 }

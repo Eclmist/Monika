@@ -22,9 +22,10 @@ namespace MonikaBot
             // context.Call(MakeOrderDialog(), ChildDialogComplete);
         }
         
-        public virtual async Task ChildDialogComplete(IDialogContext context, IAwaitable<object> response)
+        public virtual async Task ChildDialogComplete(IDialogContext context, IAwaitable<OrderForm> response)
         {
 
+            OrderForm completedForm = await response;
             Cart cart = context.UserData.GetValueOrDefault<Cart>("Cart");
             
             // Actually process the sandwich order...
@@ -35,7 +36,7 @@ namespace MonikaBot
                 options: new[] { "Yes", "No" },
                 prompt: "Are the order details so far correct?",
                 promptStyle: PromptStyle.Auto
-                );  
+            );  
 
             context.Done(this);
         }
