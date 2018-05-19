@@ -18,7 +18,7 @@ namespace MonikaBot
 
         public async virtual Task ShowOptions(IDialogContext context, IAwaitable<IMessageActivity> result)
         {
-
+            context.
             PromptDialog.Choice(
                 context: context,
                 resume: ChoiceReceivedAsync,
@@ -40,6 +40,7 @@ namespace MonikaBot
             else if (msg.Text.ToLower().Contains("order"))
             {
                 // any better way to just call choicereceivedasync from here?
+                
                 context.Call<object>(new PlaceOrderDialog(), ChildDialogComplete);
             }
             else
